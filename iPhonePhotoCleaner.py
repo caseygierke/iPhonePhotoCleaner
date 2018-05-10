@@ -17,6 +17,9 @@ import exifread
 # import re
 import Image
 from distutils.dir_util import copy_tree
+import Tkinter 
+from Tkinter import Tk
+from tkFileDialog import askdirectory
 
 # -------------------------------------------------
 # DEFINE FUNCTIONS
@@ -41,10 +44,17 @@ dir_path = os.path.abspath(os.path.dirname(__file__))
 base = 'iPhone Files'
 # base = 'test II'
 
-# Define the directories to work from and create in
-if not os.path.exists(dir_path+os.sep+base+os.sep):
-	os.makedirs(dir_path+os.sep+base+os.sep)
 src_dir = dir_path+os.sep+base+os.sep
+
+# Get path to iPhone photo files
+Files = glob.glob(src_dir+'*'+os.sep+'*.jpg*')
+if Files == []:
+	# Get path from user
+	Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+	filename = askdirectory(initialdir = "/",title = "I can't find your iPhone photos. \nPlease show me where you keep them?") # show an "Open" dialog box and return the path to the selected file
+	src_dir = str(filename)
+	src_dir = src_dir.replace('/','\\')
+	base = src_dir[find_last(src_dir,'\\')+1:]
 
 # Check that destination directories exist and create if not
 if not os.path.exists(dir_path+os.sep+base+"- Copy"+os.sep):
@@ -164,3 +174,11 @@ for i in range(len(Files)):
 			print('Renaming '+newName+'.mov')
 			shutil.copy(Files[i][:-3]+'MOV', dst_dir+newName+'- Live.mov')
 
+# import Tkinter as tk
+# Open a message window
+master = Tkinter.Tk()
+whatever_you_do = "1) Select the ~- Timestamped \nand ~- No Timestamp folders, \nright click to get properties and check the file size.  \n\n2) Also right click the original folder and check its file size to be sure that they are the same.  \n\nIf they are, feel free to delete the original folder and the ~- Copy folder. If they are not, please contact me at caseygierke@gmail.com to fix the issue."
+msg = Tkinter.Message(master, text = whatever_you_do)
+msg.config(bg='lightblue', font=('calibri', 14, 'bold'), relief = 'groove')
+msg.pack()
+Tkinter.mainloop()
