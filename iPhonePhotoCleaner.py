@@ -133,6 +133,10 @@ for i in range(len(Files)):
 	# Get date information by getting minimum creation time
 	exif_data = img._getexif()
 	mtime = "?"
+	# Deal with images that have no data
+	if exif_data is None:
+		exif_data = []
+		mtime = mtime
 	if 306 in exif_data and exif_data[306] < mtime: # 306 = DateTime
 		mtime = exif_data[306]
 	if 36867 in exif_data and exif_data[36867] < mtime: # 36867 = DateTimeOriginal
